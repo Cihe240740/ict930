@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shopping Cart</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #2c3e50;
+    }
+
+    .cart-container {
+        max-width: 800px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #3498db;
+        color: white;
+    }
+
+    input[type="number"] {
+        width: 60px;
+        padding: 5px;
+        text-align: center;
+    }
+
+    .remove-btn {
+        background-color: #e74c3c;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .remove-btn:hover {
+        background-color: #c0392b;
+    }
+
+    .total {
+        text-align: right;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 15px;
+    }
+
+    .checkout-btn {
+        display: block;
+        margin: 20px auto 0;
+        padding: 10px 20px;
+        background-color: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .checkout-btn:hover {
+        background-color: #1e8449;
+    }
+</style>
+</head>
+<body>
+
+<h1>Your Shopping Cart</h1>
+
+<div class="cart-container">
+    <table id="cartTable">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price ($)</th>
+                <th>Quantity</th>
+                <th>Subtotal ($)</th>
+                <th>Remove</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Product A</td>
+                <td>15.00</td>
+                <td><input type="number" value="1" min="1" onchange="updateCart()"></td>
+                <td class="subtotal">15.00</td>
+                <td><button class="remove-btn" onclick="removeItem(this)">X</button></td>
+            </tr>
+            <tr>
+                <td>Product B</td>
+                <td>25.00</td>
+                <td><input type="number" value="2" min="1" onchange="updateCart()"></td>
+                <td class="subtotal">50.00</td>
+                <td><button class="remove-btn" onclick="removeItem(this)">X</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="total">Total: $<span id="totalAmount">65.00</span></div>
+
+    <button class="checkout-btn">Proceed to Checkout</button>
+</div>
+
+<script>
+function updateCart() {
+    let total = 0;
+    const rows = document.querySelectorAll("#cartTable tbody tr");
+    rows.forEach(row => {
+        const price = parseFloat(row.cells[1].textContent);
+        const qty = parseInt(row.querySelector("input").value);
+        const subtotal = price * qty;
+        row.querySelector(".subtotal").textContent = subtotal.toFixed(2);
+        total += subtotal;
+    });
+    document.getElementById("totalAmount").textContent = total.toFixed(2);
+}
+
+function removeItem(button) {
+    button.closest("tr").remove();
+    updateCart();
+}
+</script>
+
+</body>
+</html>

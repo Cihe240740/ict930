@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout — Sip Happens</title>
+  <link rel="icon" href="./images/favicon.png" type="image/png">
+  <link rel="stylesheet" href="./css/style.css" />
+  <!-- Font Awesome for icons (to match index/register) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  </head>
+  <body>
+  <!-- Header -->
+  <header class="header">
+  <nav class="nav" aria-label="Primary">
+  <div class="branding">
+  <a class="logo" href="index.html">Sip Happens</a>
+  <div class="tagline">When life happens, sip back.</div>
+  </div>
+  <div class="nav-links">
+  <a href="index.html">Home</a>
+  <a href="login.html">Login</a>
+  <a href="cart.html">Cart</a>
+  <a href="admin.html">Admin</a>
+  </div>
+  </nav>
+  </header>
+  <!-- Main: page content wrapper -->
+  <main class="container stack">
+  <h1 class="section-title">Checkout</h1>
+  <div class="checkout-grid">
+  <!-- Billing & Shipping -->
+  <section class="stack">
+  <form class="form card-surface" id="checkoutForm" novalidate>
+  <h2 class="section-title">Billing details</h2>
+  <div class="form-grid">
+  <div class="field"><label class="label" for="bfirst">First name</label><input class="input" id="bfirst" autocomplete="given-name" required /></div>
+  <div class="field"><label class="label" for="blast">Last name</label><input class="input" id="blast" autocomplete="family-name" required /></div>
+  <div class="field"><label class="label" for="bemail">Email</label><input class="input" id="bemail" type="email" autocomplete="email" required /></div>
+  <div class="field"><label class="label" for="bphone">Phone</label><input class="input" id="bphone" type="tel" autocomplete="tel" /></div>
+  <div class="field"><label class="label" for="baddr">Address</label><input class="input" id="baddr" autocomplete="address-line1" required /></div>
+  <div class="field"><label class="label" for="bcity">City</label><input class="input" id="bcity" autocomplete="address-level2" required /></div>
+  <div class="field"><label class="label" for="bstate">State</label><input class="input" id="bstate" autocomplete="address-level1" required /></div>
+  <div class="field"><label class="label" for="bzip">Postcode</label><input class="input" id="bzip" autocomplete="postal-code" required /></div>
+  </div>
+  <div class="row row-center">
+  <input id="same" type="checkbox" />
+  <label for="same">Shipping address same as billing</label>
+  </div>
+  <h2 class="section-title">Shipping address</h2>
+  <div class="form-grid" id="shippingFields">
+  <div class="field"><label class="label" for="saddr">Address</label><input class="input" id="saddr" autocomplete="shipping address-line1" required /></div>
+  <div class="field"><label class="label" for="scity">City</label><input class="input" id="scity" autocomplete="shipping address-level2" required /></div>
+  <div class="field"><label class="label" for="sstate">State</label><input class="input" id="sstate" autocomplete="shipping address-level1" required /></div>
+  <div class="field"><label class="label" for="szip">Postcode</label><input class="input" id="szip" autocomplete="shipping postal-code" required /></div>
+  </div>
+  <h2 class="section-title">Payment</h2>
+  <div class="form-grid">
+  <div class="field"><label class="label" for="cardname">Name on card</label><input class="input" id="cardname" autocomplete="cc-name" required /></div>
+  <div class="field"><label class="label" for="cardnum">Card number</label><input class="input" id="cardnum" inputmode="numeric" autocomplete="cc-number" required /></div>
+  <div class="field"><label class="label" for="exp">Expiry (MM/YY)</label><input class="input" id="exp" inputmode="numeric" autocomplete="cc-exp" required /></div>
+  <div class="field"><label class="label" for="cvc">CVC</label><input class="input" id="cvc" inputmode="numeric" autocomplete="cc-csc" required /></div>
+  </div>
+  <div class="row">
+  <button class="btn btn-primary" type="submit">Place order</button>
+  <a class="btn btn-outline" href="cart.html">Back to cart</a>
+  </div>
+  </form>
+  </section>
+  <!-- Order Summary -->
+  <aside class="card-surface stack" aria-label="Order summary">
+  <h2 class="section-title">Order summary</h2>
+  <div id="summaryItems" class="stack"></div>
+  <hr style="border:0; height:1px; background:#ffe0e7" />
+  <div class="summary-row"><span>Subtotal</span><span id="subtotal">$0.00</span></div>
+  <div class="summary-row"><span>Shipping</span><span id="shipping">$0.00</span></div>
+  <div class="summary-row total"><span>Total</span><span id="total">$0.00</span></div>
+  </aside>
+  </div>
+  </main>
+  <!-- Footer -->
+  <footer class="footer">
+  <div class="footer-inner">
+  <div>© <span id="year"></span> Sip Happens — All rights reserved.</div>
+  <div class="footer-links">
+  <a href="policy.html">Privacy Policy</a> |
+      <a href="shipping.html">Shipping & Returns</a> |
+      <a href="terms.html">Terms of Service</a>
+  </div>
+  <div class="contact-info">
+  <span><i class="fas fa-envelope"></i>
+  <a href="mailto:contact@siphappens.com">hello@siphappens.com</a></span> | 
+      <span><i class="fas fa-phone"></i> +61 400 123 456</span>
+  </div>
+  </div>
+  </footer>
+  <script>
+    // Year stamp
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Toggle "same as billing"
+    const same = document.getElementById('same');
+    const ship = document.getElementById('shippingFields');
+    function syncShipping() {
+      ship.style.display = same.checked ? 'none' : 'grid';
+      ship.querySelectorAll('input').forEach(i => i.toggleAttribute('required', !same.checked));
+    }
+    same.addEventListener('change', syncShipping);
+    syncShipping();
+
+    // Cart functions
+    function getCart() {
+      return JSON.parse(localStorage.getItem('cart') || '[]');
+    }
+    function money(n) {
+      return `$${(Math.round(n * 100) / 100).toFixed(2)}`;
+    }
+
+    // Debug: Log cart contents
+    const cartData = getCart();
+    console.log("Cart contents on load:", cartData);
+
+    // Auto-clear cart if empty
+    if (!cartData.length) {
+      localStorage.removeItem('cart');
+    }
+
+    // Render summary
+    function renderSummary() {
+      const wrap = document.getElementById('summaryItems');
+      wrap.innerHTML = '';
+      const cart = getCart();
+      if (!cart.length) {
+        document.getElementById('subtotal').textContent = '$0.00';
+        document.getElementById('shipping').textContent = '$0.00';
+        document.getElementById('total').textContent = '$0.00';
+        return;
+      }
+      let subtotal = 0;
+      cart.forEach(item => {
+        const line = document.createElement('div');
+        line.className = 'row';
+        line.style.justifyContent = 'space-between';
+        line.innerHTML = `<span>${item.name} × ${item.qty}</span><strong>${money(item.price * item.qty)}</strong>`;
+        subtotal += item.price * item.qty;
+        wrap.appendChild(line);
+      });
+      document.getElementById('subtotal').textContent = money(subtotal);
+      const shipping = cart.length ? 6 : 0;
+      document.getElementById('shipping').textContent = money(shipping);
+      document.getElementById('total').textContent = money(subtotal + shipping);
+    }
+    renderSummary();
+
+    // Mock submit
+    document.getElementById('checkoutForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('Order placed (mock). Thank you!');
+      localStorage.removeItem('cart');
+      window.location.href = 'index.html';
+    });
+  </script>
+  </body>
+  </html>

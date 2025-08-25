@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sip Happens — When Life Happens, Sip Back</title>
+  <link rel="icon" href="./images/favicon.png" type="image/png">
+  <link rel="stylesheet" href="./css/style.css" />
+  <!-- Header brand emphasis -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  </head>
+  <body>
+  <!-- Header -->
+  <header class="header">
+  <nav class="nav" aria-label="Primary">
+  <div class="branding">
+  <a class="logo" href="index.html">Sip Happens</a>
+  <div class="tagline">When life happens, sip back.</div>
+  </div>
+  <div class="nav-links">
+  <a href="index.html">Home</a>
+  <a href="login.html">Login</a>
+  <a href="cart.html">Cart</a>
+  <a href="admin.html">Admin</a>
+  </div>
+  </nav>
+  </header>
+  <!-- Main: page content wrapper -->
+  <main class="container stack">
+  <!-- Hero / Search -->
+  <section class="hero">
+  <h1>Our top sips, picked for you</h1>
+  <div class="searchbar">
+  <input id="search" class="input" type="search" placeholder="Search products…" />
+  <button class="btn btn-outline" id="searchBtn">Search</button>
+  </div>
+  </section>
+  <!-- Products Grid -->
+  <section>
+  <h2 class="section-title">Products</h2>
+  <div id="productGrid" class="grid products">
+  <!-- Products will be generated here -->
+  </div>
+  </section>
+  </main>
+  <!-- Footer -->
+  <footer class="footer">
+  <div class="footer-inner">
+  <div>© <span id="year"></span> Sip Happens — All rights reserved.</div>
+  <div class="footer-links">
+  <a href="policy.html">Privacy Policy</a> |
+      <a href="shipping.html">Shipping & Returns</a> |
+      <a href="terms.html">Terms of Service</a>
+  </div>
+  <div class="contact-info">
+  <span><i class="fas fa-envelope"></i>
+  <a href="mailto:contact@siphappens.com">hello@siphappens.com</a></span> | 
+      <span><i class="fas fa-phone"></i> +61 400 123 456</span>
+  </div>
+  </div>
+  </footer>
+  <!-- Font Awesome for icons --><!-- JS -->
+  <script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  function getCart(){ return JSON.parse(localStorage.getItem('cart')||'[]'); }
+  function setCart(c){ localStorage.setItem('cart', JSON.stringify(c)); }
+
+  // Funny fruit-based names
+  const tumblerNames = [
+    "Melon Drama",        // tumbler_1.png
+    "Berry Scary",        // tumbler_2.png
+    "Peach Please",       // tumbler_3.png
+    "Cherry On Top",      // tumbler_4.png
+    "Blue-licious",       // tumbler_5.png
+    "Grape Escape",       // tumbler_6.png
+    "Lime Crime",         // tumbler_7.png
+    "Pawpaw",             // tumbler_8.png
+    "Coco Cutie",         // tumbler_9.png
+    "Pineapple Sing",     // tumbler_10.png
+    "Blue-bae",           // tumbler_11.png
+    "Plum & Done"         // tumbler_12.png
+  ];
+
+  // Different prices for each tumbler
+  const tumblerPrices = [
+    18.99, // Melon Drama
+    20.50, // Berry Scary
+    19.75, // Peach Please
+    21.00, // Cherry On Top
+    22.25, // Blue-licious
+    20.99, // Grape Escape
+    18.50, // Lime Crime
+    19.25, // Pawpaw
+    21.50, // Coco Cutie
+    22.75, // Pineapple Sing
+    20.25, // Blue-bae
+    23.00  // Plum & Done
+  ];
+
+  // Generate the tumbler products
+  const grid = document.getElementById('productGrid');
+  for (let i = 1; i <= 12; i++) {
+    grid.innerHTML += `
+      <article class="card" data-name="${tumblerNames[i-1]}" data-price="${tumblerPrices[i-1]}">
+  <div class="card-img large-img">
+  <img src="./images/tumbler_${i}.png" alt="${tumblerNames[i-1]}" />
+  </div>
+  <div class="card-body">
+  <h3 class="card-title">${tumblerNames[i-1]}</h3>
+  <p class="card-meta">Insulated • 500ml</p>
+  <div class="card-actions">
+  <span class="price">$${tumblerPrices[i-1].toFixed(2)}</span>
+  <button class="btn btn-primary" data-action="add-to-cart">Add to Cart</button>
+  </div>
+  </div>
+  </article>
+    `;
+  }
+
+  // Add-to-cart function
+  document.addEventListener('click', function(e) {
+    if (e.target && e.target.dataset.action === 'add-to-cart') {
+      const btn = e.target;
+      const card = btn.closest('.card');
+      const name = card.dataset.name;
+      const price = parseFloat(card.dataset.price);
+      const img = card.querySelector('img')?.getAttribute('src') || '';
+      const cart = getCart();
+      const existing = cart.find(i => i.name === name);
+      if (existing) existing.qty += 1; else cart.push({ name, price, qty: 1, img });
+      setCart(cart);
+      btn.textContent = 'Added!';
+      setTimeout(() => (btn.textContent = 'Add to Cart'), 900);
+    }
+  });
+
+  // Search filter
+  document.getElementById('searchBtn').addEventListener('click', () => {
+    const q = document.getElementById('search').value.trim().toLowerCase();
+    const cards = Array.from(document.querySelectorAll('#productGrid .card'));
+    cards.forEach(card => {
+      const name = card.dataset.name.toLowerCase();
+      card.style.display = name.includes(q) ? '' : 'none';
+    });
+  });
+</script>
+  </body>
+  </html>

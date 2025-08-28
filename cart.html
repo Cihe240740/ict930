@@ -1,148 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- How this file works: reads localStorage("cart"), lets you change qty/remove, shows total, goes to checkout. -->
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shopping Cart</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f8f9fa;
-        margin: 0;
-        padding: 20px;
-    }
-
-    h1 {
-        text-align: center;
-        margin-bottom: 20px;
-        color: #2c3e50;
-    }
-
-    .cart-container {
-        max-width: 800px;
-        margin: auto;
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    th, td {
-        padding: 12px;
-        text-align: center;
-        border-bottom: 1px solid #ddd;
-    }
-
-    th {
-        background-color: #3498db;
-        color: white;
-    }
-
-    input[type="number"] {
-        width: 60px;
-        padding: 5px;
-        text-align: center;
-    }
-
-    .remove-btn {
-        background-color: #e74c3c;
-        color: white;
-        border: none;
-        padding: 6px 12px;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-    .remove-btn:hover {
-        background-color: #c0392b;
-    }
-
-    .total {
-        text-align: right;
-        font-size: 18px;
-        font-weight: bold;
-        margin-top: 15px;
-    }
-
-    .checkout-btn {
-        display: block;
-        margin: 20px auto 0;
-        padding: 10px 20px;
-        background-color: #27ae60;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        font-size: 16px;
-        cursor: pointer;
-    }
-
-    .checkout-btn:hover {
-        background-color: #1e8449;
-    }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cart — Sip Happens</title>
+  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="icon" href="./images/favicon.png" />
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to main content</a>
 
-<h1>Your Shopping Cart</h1>
+  <!-- shared header -->
+  <header class="header">
+    <div class="container">
+      <nav class="nav" aria-label="Primary">
+        <a class="logo" href="index.html" style="font-weight:800">Sip Happens</a>
+        <div class="nav-links">
+          <a href="index.html">Home</a><a href="Login.html">Login</a><a href="Cart.html">Cart</a><a href="Admin.html">Admin</a>
+        </div>
+      </nav>
+    </div>
+  </header>
 
-<div class="cart-container">
-    <table id="cartTable">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Price ($)</th>
-                <th>Quantity</th>
-                <th>Subtotal ($)</th>
-                <th>Remove</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Product A</td>
-                <td>15.00</td>
-                <td><input type="number" value="1" min="1" onchange="updateCart()"></td>
-                <td class="subtotal">15.00</td>
-                <td><button class="remove-btn" onclick="removeItem(this)">X</button></td>
-            </tr>
-            <tr>
-                <td>Product B</td>
-                <td>25.00</td>
-                <td><input type="number" value="2" min="1" onchange="updateCart()"></td>
-                <td class="subtotal">50.00</td>
-                <td><button class="remove-btn" onclick="removeItem(this)">X</button></td>
-            </tr>
-        </tbody>
-    </table>
+  <main id="main" class="container">
+    <h1>Your Cart</h1>
+    <div id="list" class="grid" style="margin-top:12px"></div>   <!-- items render here -->
+    <p style="margin-top:12px;font-weight:700">Total: $<span id="total">0.00</span></p>
+    <div style="margin-top:12px"><button class="btn" id="toCheckout">Proceed to Checkout</button></div>
+  </main>
 
-    <div class="total">Total: $<span id="totalAmount">65.00</span></div>
+  <!-- shared footer -->
+  <footer class="footer">
+    <div class="container" style="text-align:center">
+      © <span id="year"></span> Sip Happens • <a href="terms.html">Terms</a> • <a href="shipping.html">Shipping</a> • <a href="policy.html">Privacy</a>
+    </div>
+  </footer>
+  <script>/* footer-year */ document.getElementById('year').textContent=new Date().getFullYear();</script>
 
-    <button class="checkout-btn">Proceed to Checkout</button>
-</div>
+  <script>
+    // tiny DOM helpers + storage
+    const $=s=>document.querySelector(s);
+    const getCart=()=>JSON.parse(localStorage.getItem('cart')||'[]');
+    const setCart=(c)=>localStorage.setItem('cart',JSON.stringify(c));
 
-<script>
-function updateCart() {
-    let total = 0;
-    const rows = document.querySelectorAll("#cartTable tbody tr");
-    rows.forEach(row => {
-        const price = parseFloat(row.cells[1].textContent);
-        const qty = parseInt(row.querySelector("input").value);
-        const subtotal = price * qty;
-        row.querySelector(".subtotal").textContent = subtotal.toFixed(2);
-        total += subtotal;
+    // render the cart grid + total
+    function render(){
+      const wrap=$("#list"); wrap.innerHTML='';
+      const cart=getCart(); let total=0;
+      cart.forEach((it,i)=>{
+        total+=it.price*it.qty;
+        const el=document.createElement('div');
+        el.className='card';
+        el.innerHTML=`
+          <div style="display:flex;gap:10px;align-items:center">
+            <img src="${it.img}" alt="${it.name}" style="width:72px;height:72px;object-fit:cover">  <!-- keep alt -->
+            <div style="flex:1">
+              <strong>${it.name}</strong>
+              <div class="field" style="margin-top:6px">
+                <label>Qty</label>
+                <input type="number" min="1" value="${it.qty}" data-i="${i}" class="input" style="max-width:80px">
+              </div>
+            </div>
+            <div style="text-align:right">
+              <div>$${(it.price*it.qty).toFixed(2)}</div>
+              <button class="btn outline" data-del="${i}" style="margin-top:6px">Remove</button>
+            </div>
+          </div>`;
+        wrap.appendChild(el);
+
+        // remove item
+        el.querySelector('[data-del]').addEventListener('click',()=>{
+          const c=getCart(); c.splice(i,1); setCart(c); render();
+        });
+        // change qty
+        el.querySelector('input[type="number"]').addEventListener('input',e=>{
+          let q=parseInt(e.target.value,10); if(!q||q<1) q=1;
+          const c=getCart(); c[i].qty=q; setCart(c); render();
+        });
+      });
+      $("#total").textContent=total.toFixed(2);
+    }
+
+    // go to checkout (only if not empty)
+    document.getElementById('toCheckout').addEventListener('click',()=>{
+      if(!getCart().length){ alert('Your cart is empty.'); return; }
+      location.href='checkout.html';
     });
-    document.getElementById("totalAmount").textContent = total.toFixed(2);
-}
 
-function removeItem(button) {
-    button.closest("tr").remove();
-    updateCart();
-}
-</script>
-
+    render();
+  </script>
 </body>
 </html>

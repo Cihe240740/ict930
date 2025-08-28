@@ -1,103 +1,72 @@
 <!DOCTYPE html>
-  <html lang="en">
-  <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create Account — Sip Happens</title>
-  <link rel="icon" href="./images/favicon.png" type="image/png">
+<html lang="en">
+<!-- How this file works: tiny register form; checks passwords match; goes to Login (demo). -->
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Register — Sip Happens</title>
   <link rel="stylesheet" href="./css/style.css" />
-  <!-- Font Awesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  </head>
-  <body>
-  <!-- Header -->
-  <header class="header">
-  <nav class="nav" aria-label="Primary">
-  <div class="branding">
-  <a class="logo" href="index.html">Sip Happens</a>
-  <div class="tagline">When life happens, sip back.</div>
-  </div>
-  <div class="nav-links">
-  <a href="index.html">Home</a>
-  <a href="login.html">Login</a>
-  <a href="cart.html">Cart</a>
-  <a href="admin.html">Admin</a>
-  </div>
-  </nav>
-  </header>
-  <!-- Main: page content wrapper -->
-  <main class="container stack">
-  <h1 class="section-title">Create your account</h1>
-  <form class="form card-surface" id="registerForm" novalidate>
-  <div class="form-grid">
-  <div class="field">
-  <label class="label" for="firstName">First name</label>
-  <input class="input" id="firstName" name="firstName" autocomplete="given-name" required />
-  </div>
-  <div class="field">
-  <label class="label" for="lastName">Last name</label>
-  <input class="input" id="lastName" name="lastName" autocomplete="family-name" required />
-  </div>
-  <div class="field">
-  <label class="label" for="email">Email</label>
-  <div class="input-icon">
-  <i class="fas fa-envelope"></i>
-  <input class="input" id="email" name="email" type="email" autocomplete="email" required />
-  </div>
-  </div>
-  <div class="field">
-  <label class="label" for="phone">Phone (optional)</label>
-  <div class="input-icon">
-  <i class="fas fa-phone"></i>
-  <input class="input" id="phone" name="phone" type="tel" autocomplete="tel" />
-  </div>
-  </div>
-  <div class="field">
-  <label class="label" for="password">Password</label>
-  <input class="input" id="password" name="password" type="password" autocomplete="new-password" required minlength="6" />
-  </div>
-  <div class="field">
-  <label class="label" for="confirm">Confirm password</label>
-  <input class="input" id="confirm" name="confirm" type="password" required minlength="6" />
-  </div>
-  </div>
-  <div class="row row-center">
-  <button class="btn btn-primary" type="submit">Create account</button>
-  <a class="btn btn-outline" href="login.html">I already have an account</a>
-  </div>
-  </form>
-  </main>
-  <!-- Footer with icons -->
-  <!-- Footer: legal + quick links + contact -->
-  <footer class="footer">
-  <div class="footer-inner">
-  <div>© <span id="year"></span> Sip Happens — All rights reserved.</div>
-  <div class="footer-links">
-  <a href="policy.html">Privacy Policy</a> |
-      <a href="shipping.html">Shipping & Returns</a> |
-      <a href="terms.html">Terms of Service</a>
-  </div>
-  <div class="contact-info">
-  <span><i class="fas fa-envelope"></i>
-  <a href="mailto:contact@siphappens.com">hello@siphappens.com</a></span> | 
-      <span><i class="fas fa-phone"></i> +61 400 123 456</span>
-  </div>
-  </div>
-  </footer>
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
+  <link rel="icon" href="./images/favicon.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
 
-    document.getElementById('registerForm').addEventListener('submit', (e) => {
+  <!-- shared header -->
+  <header class="header">
+    <div class="container">
+      <nav class="nav" aria-label="Primary">
+        <a class="logo" href="index.html" style="font-weight:800">Sip Happens</a>
+        <div class="nav-links">
+          <a href="index.html">Home</a>
+		  <a href="Login.html">Login</a>
+		  <a href="Cart.html">Cart</a>
+		  <a href="Admin.html">Admin</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <h1>Create account</h1>
+    <form id="f" style="max-width:420px;margin-top:12px">
+	
+		<div class="field"><label for="fn">First name</label>
+			<input id="fn" class="input" required>
+		</div>
+		<div class="field"><label for="ln">Last name</label>
+			<input id="ln" class="input" required>
+		</div>
+		<div class="field"><label for="em">Email</label>
+			<input id="em" class="input" type="email" required>
+		</div>
+		<div class="field"><label for="p1">Password</label>
+			<input id="p1" class="input" type="password" minlength="6" required>
+		</div>
+		<div class="field"><label for="p2">Confirm password</label>
+			<input id="p2" class="input" type="password" minlength="6" required>
+		</div>
+		
+      <button class="btn" type="submit">Create account</button>
+    </form>
+  </main>
+
+  <!-- shared footer -->
+  <footer class="footer">
+    <div class="container" style="text-align:center">
+      © <span id="year"></span> Sip Happens • <a href="terms.html">Terms</a> • <a href="shipping.html">Shipping</a> • <a href="policy.html">Privacy</a>
+    </div>
+  </footer>
+  <script>/* footer-year */ document.getElementById('year').textContent=new Date().getFullYear();</script>
+
+  <script>
+    // basic password match check
+    document.getElementById('f').addEventListener('submit',e=>{
       e.preventDefault();
-      const pw = document.getElementById('password').value;
-      const cf = document.getElementById('confirm').value;
-      if (pw !== cf) {
-        alert('Passwords do not match.');
-        return;
-      }
-      alert('Account created (mock). Use Login to sign in.');
-      window.location.href = 'login.html';
+      const a=document.getElementById('p1').value, b=document.getElementById('p2').value;
+      if(a!==b){alert('Passwords do not match.');return;}
+      alert('Account created. Use Login to sign in.');
+      location.href='Login.html';
     });
   </script>
-  </body>
-  </html>
+</body>
+</html>

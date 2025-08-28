@@ -1,94 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- How this file works: reads localStorage("cart"), lets you change qty/remove, shows total, goes to checkout. -->
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Cart — Sip Happens</title>
-  <link rel="stylesheet" href="./css/style.css" />
-  <link rel="icon" href="./images/favicon.png" />
+  	  <!-- meta: utf-8 + mobile scaling -->
+	  <meta charset="utf-8" />
+	  <meta name="viewport" content="width=device-width,initial-scale=1" />
+	  <title>Sip Happens — Home</title>
+	  <!-- one small stylesheet -->
+	  <link rel="stylesheet" href="./css/style.css" />
+	  <link rel="icon" href="./images/favicon.png" />
+	  
+  <style>
+    body { font-family: Arial; background:#fafafa; margin:0; }
+    h1 { text-align:center; margin:20px; }
+    table { width:90%; margin:0 auto; border-collapse:collapse; }
+    th,td { border:1px solid #ccc; padding:10px; text-align:center; }
+    th { background:#eee; }
+    img { width:60px; height:60px; object-fit:cover; }
+    button { padding:4px 8px; margin:2px; cursor:pointer; }
+    .qty-btn { background:#111; color:#fff; border:none; }
+    .remove-btn { background:red; color:white; border:none; }
+    .checkout-btn {
+      display:block; margin:20px auto; padding:10px 20px;
+      background:blue; color:white; border:none; cursor:pointer;
+	  
+    }
+	
+table {
+	  width:auto; margin:20px auto; border-collapse:separate;
+	  border-spacing:0; border-radius:8px; overflow:hidden;
+	  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+	}
+	th,td {
+	  padding:12px; text-align:center;
+	}
+	th {
+	  background:#333; color:white;
+	}
+	tr:nth-child(even){ background:#f9f9f9; }
+	tr:hover { background:#f1f1f1; }
+	img {
+	  width:60px; height:60px; object-fit:cover; border-radius:6px;
+	}
+	
+  </style>
 </head>
 <body>
+
+ <!-- keyboard shortcut to skip nav -->
   <a class="skip-link" href="#main">Skip to main content</a>
 
-  <!-- shared header -->
+  <!-- shared header/nav (identical on every page) -->
   <header class="header">
     <div class="container">
       <nav class="nav" aria-label="Primary">
         <a class="logo" href="index.html" style="font-weight:800">Sip Happens</a>
         <div class="nav-links">
-          <a href="index.html">Home</a><a href="Login.html">Login</a><a href="Cart.html">Cart</a><a href="Admin.html">Admin</a>
+          <a href="index.html">Home</a>
+		  <a href="Login.html">Login</a>
+		  <a href="Cart.html">Cart(<span id="cartCount">0</span>)</a>
+		  <a href="Admin.html">Admin</a>
         </div>
-      </nav>
+	  </nav>
     </div>
   </header>
 
-  <main id="main" class="container">
-    <h1>Your Cart</h1>
-    <div id="list" class="grid" style="margin-top:12px"></div>   <!-- items render here -->
-    <p style="margin-top:12px;font-weight:700">Total: $<span id="total">0.00</span></p>
-    <div style="margin-top:12px"><button class="btn" id="toCheckout">Proceed to Checkout</button></div>
-  </main>
 
-  <!-- shared footer -->
-  <footer class="footer">
+
+  <h1>Your Cart</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Image</th><th>Name</th><th>Qty</th><th>Price</th><th>Total</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="cartTable"></tbody>
+  </table>
+  <h2 style="text-align:center" id="grandTotal"></h2>
+  <button class="checkout-btn" onclick="goCheckout()">Proceed to Checkout</button>
+
+ <footer class="footer">
     <div class="container" style="text-align:center">
       © <span id="year"></span> Sip Happens • <a href="terms.html">Terms</a> • <a href="shipping.html">Shipping</a> • <a href="policy.html">Privacy</a>
     </div>
   </footer>
-  <script>/* footer-year */ document.getElementById('year').textContent=new Date().getFullYear();</script>
+ 
+<script>/* footer-year */ document.getElementById('year').textContent=new Date().getFullYear();</script>
+
 
   <script>
-    // tiny DOM helpers + storage
-    const $=s=>document.querySelector(s);
-    const getCart=()=>JSON.parse(localStorage.getItem('cart')||'[]');
-    const setCart=(c)=>localStorage.setItem('cart',JSON.stringify(c));
+    function getProducts(){
+      let stored=JSON.parse(localStorage.getItem("products")||"[]");
+      if(stored.length>0) return stored;
+      return [
+        { name:"Melon Drama", price:18.99, img:"./images/tumbler_1.png" },
+        { name:"Berry Scary", price:20.50, img:"./images/tumbler_2.png" },
+        { name:"Peach Please", price:19.75, img:"./images/tumbler_3.png" },
+        { name:"Cherry On Top", price:21.00, img:"./images/tumbler_4.png" },
+        { name:"Blue-licious", price:22.25, img:"./images/tumbler_5.png" },
+        { name:"Grape Escape", price:20.99, img:"./images/tumbler_6.png" }
+      ];
+    }
+    let cart=JSON.parse(localStorage.getItem("cart")||"[]");
+    const products=getProducts();
+    const table=document.getElementById("cartTable");
+    const grandEl=document.getElementById("grandTotal");
 
-    // render the cart grid + total
-    function render(){
-      const wrap=$("#list"); wrap.innerHTML='';
-      const cart=getCart(); let total=0;
-      cart.forEach((it,i)=>{
-        total+=it.price*it.qty;
-        const el=document.createElement('div');
-        el.className='card';
-        el.innerHTML=`
-          <div style="display:flex;gap:10px;align-items:center">
-            <img src="${it.img}" alt="${it.name}" style="width:72px;height:72px;object-fit:cover">  <!-- keep alt -->
-            <div style="flex:1">
-              <strong>${it.name}</strong>
-              <div class="field" style="margin-top:6px">
-                <label>Qty</label>
-                <input type="number" min="1" value="${it.qty}" data-i="${i}" class="input" style="max-width:80px">
-              </div>
-            </div>
-            <div style="text-align:right">
-              <div>$${(it.price*it.qty).toFixed(2)}</div>
-              <button class="btn outline" data-del="${i}" style="margin-top:6px">Remove</button>
-            </div>
-          </div>`;
-        wrap.appendChild(el);
-
-        // remove item
-        el.querySelector('[data-del]').addEventListener('click',()=>{
-          const c=getCart(); c.splice(i,1); setCart(c); render();
-        });
-        // change qty
-        el.querySelector('input[type="number"]').addEventListener('input',e=>{
-          let q=parseInt(e.target.value,10); if(!q||q<1) q=1;
-          const c=getCart(); c[i].qty=q; setCart(c); render();
-        });
+    function renderCart(){
+      table.innerHTML="";
+      let grand=0;
+      cart.forEach((item,i)=>{
+        const prod=products.find(p=>p.name===item.name);
+        const price=prod?prod.price:item.price;
+        const img=prod?prod.img:item.img;
+        const total=item.qty*price;
+        grand+=total;
+        table.innerHTML+=`
+          <tr>
+            <td><img src="${img}" alt="${item.name}"></td>
+            <td>${item.name}</td>
+            <td>
+              <button class="qty-btn" onclick="decrease(${i})">-</button>
+              ${item.qty}
+              <button class="qty-btn" onclick="increase(${i})">+</button>
+            </td>
+            <td>$${price.toFixed(2)}</td>
+            <td>$${total.toFixed(2)}</td>
+            <td><button class="remove-btn" onclick="removeItem(${i})">Remove</button></td>
+          </tr>`;
       });
-      $("#total").textContent=total.toFixed(2);
+      grandEl.textContent="Grand Total: $"+grand.toFixed(2);
+      localStorage.setItem("cart",JSON.stringify(cart));
     }
 
-    // go to checkout (only if not empty)
-    document.getElementById('toCheckout').addEventListener('click',()=>{
-      if(!getCart().length){ alert('Your cart is empty.'); return; }
-      location.href='checkout.html';
-    });
+    function increase(i){ cart[i].qty++; renderCart(); }
+    function decrease(i){ cart[i].qty--; if(cart[i].qty<=0) cart.splice(i,1); renderCart(); }
+    function removeItem(i){ cart.splice(i,1); renderCart(); }
 
-    render();
+    function goCheckout(){
+      if(cart.length===0){ alert("Cart is empty!"); return; }
+      window.location="checkout.html";
+    }
+
+    renderCart();
   </script>
 </body>
 </html>

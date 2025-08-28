@@ -1,27 +1,36 @@
-// data kept tiny; names must match across pages
-const NAMES=["Melon Drama","Berry Scary","Peach Please","Cherry On Top","Blue-licious","Grape Escape"];
-const PRICES=[18.99,20.50,19.75,21.00,22.25,20.99];
+// Load products
+function getProducts(){
+  let stored=JSON.parse(localStorage.getItem("products")||"[]");
+  if(stored.length>0) return stored;
+  return [
+    { name:"Melon Drama", price:18.99, img:"tumbler_1.png" },
+    { name:"Berry Scary", price:20.50, img:"tumbler_2.png" },
+    { name:"Peach Please", price:19.75, img:"tumbler_3.png" },
+    { name:"Cherry On Top", price:21.00, img:"tumbler_4.png" },
+    { name:"Blue-licious", price:22.25, img:"tumbler_5.png" },
+    { name:"Grape Escape", price:20.99, img:"tumbler_6.png" }
+  ];
+}
 
-// cart helpers (JSON under "cart")
 const getCart=()=>JSON.parse(localStorage.getItem('cart')||'[]');
 const setCart=(c)=>localStorage.setItem('cart',JSON.stringify(c));
 
-// render simple cards
+// render cards
 const grid=document.getElementById('grid');
-NAMES.forEach((name,i)=>{
-  const price=PRICES[i];
+const products=getProducts();
+products.forEach((p,i)=>{
   grid.insertAdjacentHTML('beforeend',`
-    <article class="card" data-name="${name}" data-price="${price}">
-      <img src="./images/tumbler_${i+1}.png" alt="${name}"> <!-- alt = product name -->
-      <strong>${name}</strong>
+    <article class="card" data-name="${p.name}" data-price="${p.price}">
+      <img src="./images/${p.img}" alt="${p.name}">
+      <strong>${p.name}</strong>
       <div class="card-actions">
-        <span>$${price.toFixed(2)}</span>
+        <span>$${p.price.toFixed(2)}</span>
         <button class="btn" data-add>Add to Cart</button>
       </div>
     </article>`);
 });
 
-// add-to-cart (event delegation)
+// add-to-cart
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-add]'); if(!b) return;
   const card=b.closest('.card');
@@ -35,7 +44,7 @@ document.addEventListener('click',e=>{
   updateCartCount();
 });
 
-// search by product name
+// search
 document.getElementById('q').addEventListener('input',e=>{
   const q=e.target.value.toLowerCase();
   document.querySelectorAll('#grid .card').forEach(c=>{
@@ -43,13 +52,11 @@ document.getElementById('q').addEventListener('input',e=>{
   });
 });
 
-// 🆕 update cart count in header
+// cart count
 function updateCartCount(){
   const cart=getCart();
   const count=cart.reduce((sum,i)=>sum+i.qty,0);
   const el=document.getElementById('cartCount');
   if(el) el.textContent=count;
 }
-
-// initialize count on page load
 updateCartCount();

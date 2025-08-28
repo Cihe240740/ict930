@@ -1,118 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- How this file works: simplest product manager; saves to localStorage("products"); add/edit/delete + search. -->
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Admin — Sip Happens</title>
-  <link rel="stylesheet" href="./css/style.css" />
-  <link rel="icon" href="./images/favicon.png" />
+	  <!-- meta: utf-8 + mobile scaling -->
+	  <meta charset="utf-8" />
+	  <meta name="viewport" content="width=device-width,initial-scale=1" />
+	  <title>Sip Happens — Home</title>
+	  <!-- one small stylesheet -->
+	  <link rel="stylesheet" href="./css/style.css" />
+	  <link rel="icon" href="./images/favicon.png" />
+  <style>
+    table {
+      width:100%; border-collapse:collapse; margin-top:20px;
+    }
+    th,td {
+      border:1px solid #ccc; padding:10px; text-align:center;
+    }
+    th { background:#eee; }
+    img.thumb { width:60px; height:60px; object-fit:cover; border-radius:6px; }
+  </style>
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to main content</a>
-
-  <!-- shared header -->
   <header class="header">
     <div class="container">
-      <nav class="nav" aria-label="Primary">
+      <nav class="nav">
         <a class="logo" href="index.html" style="font-weight:800">Sip Happens</a>
         <div class="nav-links">
           <a href="index.html">Home</a>
-		  <a href="Login.html">Login</a>
-		  <a href="Cart.html">Cart</a>
-		  <a href="Admin.html">Admin</a>
+          <a href="Login.html">Login</a>
+          <a href="Cart.html">Cart(<span id="cartCount">0</span>)</a>
+          <a href="Admin.html">Admin</a>
         </div>
       </nav>
     </div>
   </header>
 
-  <main id="main" class="container">
-    <h1>Products (Admin)</h1>
+  <main class="container">
+    <h1>Admin Dashboard</h1>
+    <section>
+      <h2 id="formTitle">Add Product</h2>
+      <form id="productForm" class="grid" style="max-width:400px">
+        <div class="field">
+          <label for="pname">Name</label>
+          <input id="pname" class="input" required>
+        </div>
+        <div class="field">
+          <label for="pprice">Price</label>
+          <input id="pprice" type="number" step="0.01" class="input" required>
+        </div>
+        <div class="field">
+          <label for="pimg">Upload Image</label>
+          <input id="pimg" type="file" accept="image/*" class="input">
+        </div>
+        <button class="btn" type="submit">Save</button>
+      </form>
+    </section>
 
-    <!-- add/update form (hidden index means "edit mode") -->
-    <form id="f" style="margin-top:12px">
-      <input type="hidden" id="idx">
-      <div class="field"><label for="name">Name</label><input id="name" class="input" required></div>
-      <div class="field"><label for="price">Price ($)</label><input id="price" class="input" type="number" step="0.01" required></div>
-      <div class="field"><label for="cat">Category</label><input id="cat" class="input" placeholder="e.g., Tumblers"></div>
-      <div class="field"><label for="desc">Description</label><textarea id="desc" class="input" rows="3"></textarea></div>
-      <button class="btn" type="submit">Save</button>
-    </form>
-
-    <!-- filter rows -->
-    <div class="field" style="margin-top:12px;max-width:420px">
-      <label for="s">Search</label>
-      <input id="s" class="input" placeholder="Type to filter…">
-    </div>
-
-    <!-- simple table -->
-    <table style="width:100%;margin-top:12px;border-collapse:collapse">
-      <thead><tr>
-        <th style="text-align:left;border-bottom:1px solid #ddd;padding:6px">Name</th>
-        <th style="text-align:left;border-bottom:1px solid #ddd;padding:6px">Price</th>
-        <th style="text-align:left;border-bottom:1px solid #ddd;padding:6px">Category</th>
-        <th style="text-align:left;border-bottom:1px solid #ddd;padding:6px">Description</th>
-        <th style="text-align:left;border-bottom:1px solid #ddd;padding:6px">Actions</th>
-      </tr></thead>
-      <tbody id="t"></tbody>
-    </table>
+    <section>
+      <h2>Products</h2>
+      <table>
+        <thead>
+          <tr><th>Name</th><th>Price</th><th>Image</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="productList"></tbody>
+      </table>
+    </section>
   </main>
 
-  <!-- shared footer -->
-  <footer class="footer">
+ <!-- shared footer (identical on every page) -->
+ <footer class="footer">
     <div class="container" style="text-align:center">
       © <span id="year"></span> Sip Happens • <a href="terms.html">Terms</a> • <a href="shipping.html">Shipping</a> • <a href="policy.html">Privacy</a>
     </div>
   </footer>
-  <script>/* footer-year */ document.getElementById('year').textContent=new Date().getFullYear();</script>
 
   <script>
-    // in-memory list + storage helpers
-    let products=[];
-    const $=s=>document.querySelector(s);
-    const load=()=>{products=JSON.parse(localStorage.getItem('products')||'[]')};
-    const save=()=>localStorage.setItem('products',JSON.stringify(products));
-
-    // draw table rows
-    function draw(list=products){
-      const tb=$("#t"); tb.innerHTML='';
-      list.forEach((p,i)=>{
-        const tr=document.createElement('tr');
-        tr.innerHTML=`<td style="padding:6px;border-bottom:1px solid #eee">${p.name}</td>
-          <td style="padding:6px;border-bottom:1px solid #eee">$${Number(p.price).toFixed(2)}</td>
-          <td style="padding:6px;border-bottom:1px solid #eee">${p.category||''}</td>
-          <td style="padding:6px;border-bottom:1px solid #eee">${p.desc||''}</td>
-          <td style="padding:6px;border-bottom:1px solid #eee">
-            <button class="btn outline" data-e="${i}">Edit</button>
-            <button class="btn" data-d="${i}" style="margin-left:6px">Delete</button>
-          </td>`;
-        tb.appendChild(tr);
-      });
+    let products = JSON.parse(localStorage.getItem("products")||"[]");
+    if(products.length===0){
+      products = [
+        { name:"Melon Drama", price:18.99, img:"tumbler_1.png" },
+        { name:"Berry Scary", price:20.50, img:"tumbler_2.png" },
+        { name:"Peach Please", price:19.75, img:"tumbler_3.png" },
+        { name:"Cherry On Top", price:21.00, img:"tumbler_4.png" },
+        { name:"Blue-licious", price:22.25, img:"tumbler_5.png" },
+        { name:"Grape Escape", price:20.99, img:"tumbler_6.png" }
+      ];
     }
 
-    // create/update product
-    $("#f").addEventListener('submit',e=>{
+    const list=document.getElementById("productList");
+    const form=document.getElementById("productForm");
+    const pname=document.getElementById("pname");
+    const pprice=document.getElementById("pprice");
+    const pimg=document.getElementById("pimg");
+    let editIndex=-1;
+
+    function saveProducts(){
+      localStorage.setItem("products",JSON.stringify(products));
+    }
+
+    function renderProducts(){
+      list.innerHTML="";
+      products.forEach((p,i)=>{
+        list.innerHTML+=`
+          <tr>
+            <td>${p.name}</td>
+            <td>$${p.price.toFixed(2)}</td>
+            <td><img class="thumb" src="./images/${p.img}" alt="${p.name}"></td>
+            <td>
+              <button class="btn" onclick="editProduct(${i})">Edit</button>
+              <button class="btn outline" onclick="deleteProduct(${i})">Delete</button>
+            </td>
+          </tr>
+        `;
+      });
+      saveProducts();
+    }
+
+    form.addEventListener("submit",e=>{
       e.preventDefault();
-      const idx=$("#idx").value;
-      const p={name:$("#name").value.trim(),price:parseFloat($("#price").value),category:$("#cat").value.trim(),desc:$("#desc").value.trim()};
-      if(idx!==''){products[idx]=p; $("#idx").value='';} else {products.push(p);}
-      e.target.reset(); save(); draw();
+      let file=pimg.files[0];
+      let fileName="";
+      if(file){
+        fileName=file.name; // assumes file is placed in /images manually
+      }
+      const prod={ name:pname.value, price:parseFloat(pprice.value), img:fileName };
+      if(editIndex>=0){
+        products[editIndex]=prod;
+        editIndex=-1;
+        document.getElementById("formTitle").textContent="Add Product";
+      } else {
+        products.push(prod);
+      }
+      form.reset();
+      renderProducts();
     });
 
-    // edit/delete via table
-    $("#t").addEventListener('click',e=>{
-      const eBtn=e.target.closest('[data-e]'); const dBtn=e.target.closest('[data-d]');
-      if(eBtn){const i=eBtn.getAttribute('data-e'),p=products[i]; $("#name").value=p.name; $("#price").value=p.price; $("#cat").value=p.category||''; $("#desc").value=p.desc||''; $("#idx").value=i;}
-      if(dBtn){const i=dBtn.getAttribute('data-d'); products.splice(i,1); save(); draw();}
-    });
+    window.editProduct=function(i){
+      const p=products[i];
+      pname.value=p.name;
+      pprice.value=p.price;
+      editIndex=i;
+      document.getElementById("formTitle").textContent="Edit Product";
+    }
 
-    // live filter
-    $("#s").addEventListener('input',e=>{
-      const q=e.target.value.toLowerCase();
-      draw(products.filter(p=>(p.name+p.category+(p.desc||'')).toLowerCase().includes(q)));
-    });
+    window.deleteProduct=function(i){
+      if(confirm("Delete "+products[i].name+"?")){
+        products.splice(i,1);
+        renderProducts();
+      }
+    }
 
-    load(); draw();
+    renderProducts();
   </script>
 </body>
 </html>

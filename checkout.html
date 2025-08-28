@@ -1,17 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- How this file works: small billing/shipping/payment form; shows summary from localStorage; basic payment checks; clears cart. -->
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Checkout — Sip Happens</title>
-  <link rel="stylesheet" href="./css/style.css" />
-  <link rel="icon" href="./images/favicon.png" />
+  	  <!-- meta: utf-8 + mobile scaling -->
+	  <meta charset="utf-8" />
+	  <meta name="viewport" content="width=device-width,initial-scale=1" />
+	  <title>Sip Happens — Home</title>
+	  <!-- one small stylesheet -->
+	  <link rel="stylesheet" href="./css/style.css" />
+	  <link rel="icon" href="./images/favicon.png" />
+  <style>
+    body { font-family: Arial; background:#fafafa; margin:0; padding:20px; }
+    h1,h2 { text-align:center; }
+    table { width:90%; margin:20px auto; border-collapse:collapse; }
+    th,td { border:1px solid #ccc; padding:10px; text-align:center; }
+    th { background:#eee; }
+    img { width:50px; height:50px; object-fit:cover; }
+    .form-box {
+      background:white; max-width:500px;
+      margin:20px auto; padding:20px;
+      border:1px solid #ccc; border-radius:6px;
+    }
+    input,textarea,select {
+      width:100%; padding:10px; margin:10px 0; box-sizing:border-box;
+    }
+    button {
+      width:100%; padding:12px; background:blue;
+      color:white; border:none; cursor:pointer;
+    }
+    button:hover { background:darkblue; }
+	
+table {
+	  width:auto; margin:20px auto; border-collapse:separate;
+	  border-spacing:0; border-radius:8px; overflow:hidden;
+	  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+	}
+	th,td {
+	  padding:12px; text-align:center;
+	}
+	th {
+	  background:#333; color:white;
+	}
+	tr:nth-child(even){ background:#f9f9f9; }
+	tr:hover { background:#f1f1f1; }
+	img {
+	  width:60px; height:60px; object-fit:cover; border-radius:6px;
+	}
+  </style>
 </head>
 <body>
+ <!-- keyboard shortcut to skip nav -->
   <a class="skip-link" href="#main">Skip to main content</a>
 
-  <!-- shared header -->
+  <!-- shared header/nav (identical on every page) -->
   <header class="header">
     <div class="container">
       <nav class="nav" aria-label="Primary">
@@ -19,121 +59,88 @@
         <div class="nav-links">
           <a href="index.html">Home</a>
 		  <a href="Login.html">Login</a>
-		  <a href="Cart.html">Cart</a>
+		  <a href="Cart.html">Cart(<span id="cartCount">0</span>)</a>
 		  <a href="Admin.html">Admin</a>
         </div>
-      </nav>
+	  </nav>
     </div>
   </header>
+  <h1>Checkout</h1>
 
-  <main id="main" class="container">
-    <h1>Checkout</h1>
+  <h2>Order Summary</h2>
+  <table id="cartTable">
+    <tr><th>Image</th><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr>
+  </table>
+  <h2 id="grandTotal"></h2>
 
-    <div class="checkout" style="margin-top:12px">
-      <!-- form column -->
-      <form id="form" novalidate>
-        <h2>Billing</h2>
-        <div class="field">
-			<label for="bname">Full name</label>
-			<input id="bname" class="input" required>
-		</div>
-        <div class="field">
-			<label for="bemail">Email</label>
-			<input id="bemail" class="input" type="email" required>
-		</div>
-        <div class="field">
-			<label for="baddr">Address</label>
-			<input id="baddr" class="input" required>
-		</div>
-      	<div class="field">
-			<label for="bcity">City</label>
-			<input id="bcity" class="input" required>
-		</div>
-        <div class="field">
-			<label for="bzip">Postcode</label>
-			<input id="bzip" class="input" required>
-		</div>
+  <div class="form-box">
+    <h2>Shipping & Payment</h2>
+    <form id="checkoutForm">
+      <input type="text" id="name" placeholder="Full Name" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="tel" id="phone" placeholder="Phone" required>
+      <textarea id="address" placeholder="Street Address" required></textarea>
+      <input type="text" id="city" placeholder="City" required>
+      <input type="text" id="zip" placeholder="ZIP / Postal Code" required>
+      <input type="text" id="country" placeholder="Country" required>
+      <select id="payment" required>
+        <option value="">Select Payment Method</option>
+        <option>Credit Card</option>
+        <option>PayPal</option>
+        <option>Bank Transfer</option>
+      </select>
+      <button type="submit">Confirm Order</button>
+    </form>
+    <p id="msg" style="color:green;"></p>
+  </div>
 
-        <div class="field" style="margin-top:8px">
-          <input id="same" type="checkbox"> <label for="same">Shipping same as billing</label>
-        </div>
-
-        <!-- shipping hides if "same" is ticked -->
-        <div id="shipBox" style="margin-top:8px">
-          <h2>Shipping</h2>
-          <div class="field"><label for="saddr">Address</label><input id="saddr" class="input" required></div>
-          <div class="field"><label for="scity">City</label><input id="scity" class="input" required></div>
-          <div class="field"><label for="szip">Postcode</label><input id="szip" class="input" required></div>
-        </div>
-
-        <h2 style="margin-top:8px">Payment</h2>
-        <div class="field"><label for="card">Card number</label><input id="card" class="input" type="password" inputmode="numeric" required></div>
-        <div class="field"><label for="exp">Expiry (MM/YY)</label><input id="exp" class="input" type="password" inputmode="numeric" required></div>
-        <div class="field"><label for="cvc">CVC</label><input id="cvc" class="input" type="password" inputmode="numeric" required></div>
-
-        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn" type="submit">Place order</button>
-          <a class="btn outline" href="Cart.html">Back to cart</a>
-        </div>
-      </form>
-
-      <!-- summary column -->
-      <aside>
-        <h2>Order Summary</h2>
-        <div id="lines" class="grid" style="margin-top:8px"></div>   <!-- line items -->
-        <p style="margin-top:8px">Subtotal: $<span id="sub">0.00</span></p>
-        <p>Shipping: $<span id="ship">0.00</span></p>
-        <p style="font-weight:700">Total: $<span id="tot">0.00</span></p>
-      </aside>
-    </div>
-  </main>
-
-  <!-- shared footer -->
-  <footer class="footer">
+ <!-- shared footer (identical on every page) -->
+ <footer class="footer">
     <div class="container" style="text-align:center">
       © <span id="year"></span> Sip Happens • <a href="terms.html">Terms</a> • <a href="shipping.html">Shipping</a> • <a href="policy.html">Privacy</a>
     </div>
-  </footer>
-  <script>/* footer-year */ document.getElementById('year').textContent=new Date().getFullYear();</script>
+  </footer>	
 
   <script>
-    // read cart + render summary
-    const getCart=()=>JSON.parse(localStorage.getItem('cart')||'[]');
-    const money=n=>(Math.round(n*100)/100).toFixed(2);
-    function renderSummary(){
-      const wrap=document.getElementById('lines'); wrap.innerHTML='';
-      const cart=getCart(); let sub=0;
-      cart.forEach(it=>{ sub+=it.price*it.qty; wrap.insertAdjacentHTML('beforeend',`<div class="card"><div>${it.name} × ${it.qty}</div><div>$${money(it.price*it.qty)}</div></div>`); });
-      document.getElementById('sub').textContent=money(sub);
-      const ship=cart.length?6:0; document.getElementById('ship').textContent=money(ship);
-      document.getElementById('tot').textContent=money(sub+ship);
+    function getProducts(){
+      let stored=JSON.parse(localStorage.getItem("products")||"[]");
+      if(stored.length>0) return stored;
+      return [
+        { name:"Melon Drama", price:18.99, img:"./images/tumbler_1.png" },
+        { name:"Berry Scary", price:20.50, img:"./images/tumbler_2.png" },
+        { name:"Peach Please", price:19.75, img:"./images/tumbler_3.png" },
+        { name:"Cherry On Top", price:21.00, img:"./images/tumbler_4.png" },
+        { name:"Blue-licious", price:22.25, img:"./images/tumbler_5.png" },
+        { name:"Grape Escape", price:20.99, img:"./images/tumbler_6.png" }
+      ];
     }
-    renderSummary();
 
-    // toggle shipping block
-    const same=document.getElementById('same'), shipBox=document.getElementById('shipBox');
-    function sync(){ shipBox.style.display=same.checked?'none':'block'; shipBox.querySelectorAll('input').forEach(i=>i.required=!same.checked); }
-    same.addEventListener('change',sync); sync();
+    let cart=JSON.parse(localStorage.getItem("cart")||"[]");
+    const products=getProducts();
+    const table=document.getElementById("cartTable");
+    let grand=0;
+    cart.forEach(item=>{
+      const p=products.find(prod=>prod.name===item.name);
+      const price=p?p.price:item.price;
+      const img=p?p.img:item.img;
+      let total=item.qty*price;
+      grand+=total;
+      table.innerHTML+=`<tr>
+        <td><img src="${img}" alt="${item.name}"></td>
+        <td>${item.name}</td><td>${item.qty}</td>
+        <td>$${price.toFixed(2)}</td><td>$${total.toFixed(2)}</td>
+      </tr>`;
+    });
+    document.getElementById("grandTotal").textContent="Grand Total: $"+grand.toFixed(2);
 
-    // simple input masking
-    const card=document.getElementById('card'), exp=document.getElementById('exp'), cvc=document.getElementById('cvc');
-    card.addEventListener('input',()=>{ let v=card.value.replace(/\D/g,'').slice(0,19); card.value=v.replace(/(.{4})/g,'$1 ').trim(); });
-    exp.addEventListener('input',()=>{ let v=exp.value.replace(/\D/g,'').slice(0,4); if(v.length>=3) v=v.slice(0,2)+'/'+v.slice(2); exp.value=v; });
-    cvc.addEventListener('input',()=>{ cvc.value=cvc.value.replace(/\D/g,'').slice(0,4); });
-
-    // tiny Luhn check (sanity only)
-    function luhnOk(d){let s=0,a=false;for(let i=d.length-1;i>=0;i--){let n=+d[i];if(a){n*=2;if(n>9)n-=9}s+=n;a=!a}return s%10===0}
-
-    // submit: validate & clear cart
-    document.getElementById('form').addEventListener('submit',e=>{
+    const form=document.getElementById("checkoutForm");
+    form.addEventListener("submit",function(e){
       e.preventDefault();
-      const raw=card.value.replace(/\s/g,'');
-      if(raw.length<12||!luhnOk(raw)){ alert('Enter a valid card number.'); return; }
-      if(!/^(0[1-9]|1[0-2])\/\d{2}$/.test(exp.value)){ alert('Use MM/YY.'); return; }
-      if(cvc.value.length<3){ alert('Invalid CVC.'); return; }
-      alert('Order placed — thank you!');
-      localStorage.removeItem('cart');
-      location.href='index.html';
+      if(cart.length===0){ alert("Cart is empty!"); return; }
+      const name=document.getElementById("name").value;
+      localStorage.removeItem("cart");
+      document.getElementById("msg").textContent="Thank you "+name+"! Your order has been placed.";
+      form.reset();
     });
   </script>
 </body>

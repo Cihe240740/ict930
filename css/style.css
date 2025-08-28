@@ -136,6 +136,7 @@ label {
 	gap:16px
 	}
 	
+
 @media (min-width:900px) {
 	.checkout {
 		grid-template-columns:1fr 320px

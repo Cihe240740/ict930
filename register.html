@@ -19,8 +19,8 @@
         <div class="nav-links">
           <a href="index.html">Home</a>
 		  <a href="Login.html">Login</a>
-		  <a href="Cart.html">Cart</a>
-		  <a href="Admin.html">Admin</a>
+		  <!-- <a href="Cart.html">Cart</a> -->
+		  <!-- <a href="Admin.html">Admin</a> -->
         </div>
       </nav>
     </div>
@@ -31,42 +31,30 @@
     <form id="f" style="max-width:420px;margin-top:12px">
 	
 		<div class="field"><label for="fn">First name</label>
-			<input id="fn" class="input" required>
+			<input id="firstname" class="input" required>
 		</div>
 		<div class="field"><label for="ln">Last name</label>
-			<input id="ln" class="input" required>
+			<input id="lastname" class="input" required>
 		</div>
 		<div class="field"><label for="em">Email</label>
-			<input id="em" class="input" type="email" required>
+			<input id="email" class="input" type="email" required>
 		</div>
 		<div class="field"><label for="p1">Password</label>
-			<input id="p1" class="input" type="password" minlength="6" required>
+			<input id="password" class="input" type="password" minlength="6" required>
 		</div>
 		<div class="field"><label for="p2">Confirm password</label>
-			<input id="p2" class="input" type="password" minlength="6" required>
+			<input id="password2" class="input" type="password" minlength="6" required>
 		</div>
 		
       <button class="btn" type="submit">Create account</button>
     </form>
+	<p id="msg"></p>
   </main>
+  
 
-  <!-- shared footer -->
-  <footer class="footer">
-    <div class="container" style="text-align:center">
-      © <span id="year"></span> Sip Happens • <a href="terms.html">Terms</a> • <a href="shipping.html">Shipping</a> • <a href="policy.html">Privacy</a>
-    </div>
-  </footer>
-  <script>/* footer-year */ document.getElementById('year').textContent=new Date().getFullYear();</script>
 
-  <script>
-    // basic password match check
-    document.getElementById('f').addEventListener('submit',e=>{
-      e.preventDefault();
-      const a=document.getElementById('p1').value, b=document.getElementById('p2').value;
-      if(a!==b){alert('Passwords do not match.');return;}
-      alert('Account created. Use Login to sign in.');
-      location.href='Login.html';
-    });
-  </script>
+<script src="./js/register.js"></script>
+
+
 </body>
 </html>

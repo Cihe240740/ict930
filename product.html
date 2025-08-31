@@ -1,20 +1,21 @@
-<!DOCTYPE html>
+	<!DOCTYPE html>
 <html lang="en">
+<!-- How this file works: minimal product grid; "Add to Cart" saves to localStorage for Cart/Checkout. -->
+
 <head>
-  	  <!-- meta: utf-8 + mobile scaling -->
+	  <!-- meta: utf-8 + mobile scaling -->
 	  <meta charset="utf-8" />
 	  <meta name="viewport" content="width=device-width,initial-scale=1" />
 	  <title>Sip Happens — Home</title>
 	  <!-- one small stylesheet -->
 	  <link rel="stylesheet" href="./css/style.css" />
-	  <link rel="stylesheet" href="./css/cart.css" />
 	  <link rel="icon" href="./images/favicon.png" />
 	  
-
 </head>
-<body>
 
- <!-- keyboard shortcut to skip nav -->
+
+<body>
+  <!-- keyboard shortcut to skip nav -->
   <a class="skip-link" href="#main">Skip to main content</a>
 
   <!-- shared header/nav (identical on every page) -->
@@ -26,31 +27,33 @@
           <a href="index.html">Home</a>
 		  <a href="product.html">Shop</a>
 		  <!-- <a href="Login.html">Login</a> -->
-		  <!-- <a href="Cart.html">Cart(<span id="cartCount">0</span>)</a> -->
+		  <a href="Cart.html">Cart(<span id="cartCount">0</span>)</a>
 		  <a href="Admin.html">Admin</a>
         </div>
 		<div id="wellcome" style="display:inline-flex;">	
-		  <p id="welcome" style="text-align:right; padding:10px;"></p> 
-		  <button class="btn" onclick="logout()">Logout</button>
-		 </div>
+		  <p id="welcome" style="text-align:right; padding:10px;"></p> <button class="btn" onclick="logout()">Logout</button>
+		  
+		  </div>
 	  </nav>
     </div>
   </header>
 
+  <!-- page-specific content -->
+  <main id="main" class="container">
+		<h1 style="margin-bottom:12px">Our Products</h1>
+
+		<!-- simple search by name -->
+		<div class="field" style="max-width:420px">
+		  <label for="q">Search products</label>
+		  <input id="q" class="input" placeholder="Type a name…">
+		</div>
+
+		<!-- product cards are injected here -->
+		<section class="grid products" id="grid" aria-label="Products"></section>
+  </main>
 
 
-  <h1>Your Cart</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>Image</th><th>Name</th><th>Qty</th><th>Price</th><th>Total</th><th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="cartTable"></tbody>
-  </table>
-  <h2 style="text-align:center" id="grandTotal"></h2>
-  <button class="checkout-btn" onclick="goCheckout()">Proceed to Checkout</button>
-
+  <!-- shared footer (identical on every page) -->
  <footer class="footer">
     <div class="container" style="text-align:center">
       © <span id="year"></span> Sip Happens • <a href="terms.html">Terms</a> • <a href="shipping.html">Shipping</a> • <a href="policy.html">Privacy</a>
@@ -59,7 +62,7 @@
  
 <script>/* footer-year */ document.getElementById('year').textContent=new Date().getFullYear();</script>
 
-<script src="./js/cart.js"></script>
- 
+<script src="./js/product.js"></script>
+
 </body>
 </html>

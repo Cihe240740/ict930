@@ -18,9 +18,8 @@
         <a class="logo" href="index.html" style="font-weight:800">Sip Happens</a>
         <div class="nav-links">
           <a href="index.html">Home</a>
-		  <a href="Login.html">Login</a>
-		  <a href="Cart.html">Cart</a>
-		  <a href="Admin.html">Admin</a>
+		  <a href="login.html">Login</a>
+
         </div>
       </nav>
     </div>
@@ -36,7 +35,7 @@
 			<input id="email" class="input" type="email" required>
 		</div>
 		<div class="field"><label for="pw">Password</label>
-			<input id="pw" class="input" type="password" required>
+			<input id="password" class="input" type="password" required>
 		</div>
       <button class="btn" type="submit">Sign In</button>
       <p style="margin-top:8px">No account? <a href="register.html">Sign up</a></p>
@@ -51,9 +50,6 @@
   </footer>
   <script>/* footer-year */ document.getElementById('year').textContent=new Date().getFullYear();</script>
 
-  <script>
-    // demo: pretend login succeeds
-    document.getElementById('f').addEventListener('submit',e=>{e.preventDefault();location.href='index.html';});
-  </script>
+  <script src="./js/login.js"></script>
 </body>
 </html>

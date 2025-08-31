@@ -1,3 +1,19 @@
+    if(sessionStorage.getItem("loggedIn")!=="true"){
+      window.location="product.html";
+    }
+    if(sessionStorage.getItem("role")!=="customer"){
+      // alert("Customers only!");
+      // window.location="product.html";
+    }
+
+    document.getElementById("welcome").textContent =
+      "Hello, " + sessionStorage.getItem("firstname");
+
+    function logout(){
+      sessionStorage.clear();
+      window.location="index.html";
+    }
+
 // Load products
 function getProducts(){
   let stored=JSON.parse(localStorage.getItem("products")||"[]");

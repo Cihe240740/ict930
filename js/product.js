@@ -1,9 +1,13 @@
     if(sessionStorage.getItem("loggedIn")!=="true"){
-      window.location="product.html";
+		window.location="product.html";
     }
-    if(sessionStorage.getItem("role")!=="customer"){
-      // alert("Customers only!");
-      // window.location="product.html";
+	if (sessionStorage.getItem("role") !== "customer") {
+		alert("Customers only!");
+		if(sessionStorage.getItem("role") == "administrator"){
+			window.location="admin.html";
+			} else {
+			window.location = "login.html";
+			}
     }
 
     document.getElementById("welcome").textContent =

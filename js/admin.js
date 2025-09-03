@@ -1,13 +1,18 @@
     if(sessionStorage.getItem("loggedIn")!=="true"){
       window.location="login.html";
     }
-    // if(sessionStorage.getItem("role")!=="admin"){
-      // alert("Admins only!");
-      // window.location="login.html";
-    // }
-
-    document.getElementById("welcome").textContent =
-      "Welcome, " + sessionStorage.getItem("username");
+	if (sessionStorage.getItem("role") !== "administrator") {
+		alert("Administrators only!");
+		if(sessionStorage.getItem("role") == "customer"){
+			window.location="product.html";
+			} else {
+			window.location = "login.html";
+		}
+    }
+	
+	
+	document.getElementById("welcome").textContent =
+      "Welcome, " + sessionStorage.getItem("lastname");
 
     function logout(){
       sessionStorage.clear();

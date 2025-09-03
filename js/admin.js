@@ -97,3 +97,42 @@
 
     renderProducts();
 	
+	// --- Users management ---
+	let users = JSON.parse(localStorage.getItem("users") || "[]");
+
+	const userList = document.getElementById("userList"); // Table in admin.html
+
+	function saveUsers() {
+	  localStorage.setItem("users", JSON.stringify(users));
+	}
+
+	function renderUsers() {
+	  if (!userList) return;
+	  userList.innerHTML = "";
+	  users.forEach((u, i) => {
+		userList.innerHTML += `
+		  <tr>
+			<td>${u.firstname || ""}</td>
+			<td>${u.lastname || ""}</td>
+			<td>${u.email}</td>
+			<td>${u.role}</td>
+			<td>
+			  <button class="btn" onclick="toggleRole(${i})">Swap role</button>
+			</td>
+		  </tr>
+		`;
+	  });
+	  saveUsers();
+	}
+
+	window.toggleRole = function (i) {
+	  if (users[i].role === "customer") {
+		users[i].role = "administrator";
+	  } else {
+		users[i].role = "customer";
+	  }
+	  renderUsers();
+	};
+
+	// init
+	renderUsers();

@@ -15,7 +15,6 @@
     }
 
 
-
     function getProducts(){
       let stored=JSON.parse(localStorage.getItem("products")||"[]");
       if(stored.length>0) return stored;

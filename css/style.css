@@ -13,8 +13,8 @@ html {
 	
 body {
 	font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-	color:#111;
-	background:#fff
+	color:#333; /* Darker text for better readability */
+	background:#f8f9fa; /* A very light gray background for a clean feel */
 	}
 	
 img {
@@ -23,7 +23,7 @@ img {
 	} /* responsive images */
 	
 a {
-	color:#0b57d0;
+	color:#007bff; /* A modern, vibrant blue for links */
 	text-decoration:none
 	}
 	
@@ -33,15 +33,17 @@ a:hover {
 
 /* Header + Footer (shared across pages) */
 .header,.footer {
-	border-top:2px solid #eee;
-	border-bottom:2px solid #eee;
-	background:#fafafa
+	border-top:1px solid #e9ecef; /* Lighter border for a softer look */
+	border-bottom:1px solid #e9ecef;
+	background:#ffffff; /* White background for the header and footer */
+	box-shadow: 0 2px 4px rgba(0,0,0,.05); /* subtle shadow for depth */
 	}
 	
 .container {
 	max-width:960px;
 	margin:0 auto;
 	padding:16px
+
 	}
 	
 .nav {
@@ -52,12 +54,18 @@ a:hover {
 	}
 	
 .nav-links a {
-	padding:6px 10px;
-	border-radius:6px
+	padding:8px 12px; /* Slightly more padding */
+	border-radius:20px; /* Rounded pill shape for navigation links */
+	transition: background-color 0.3s ease; /* Smooth transition on hover */
+	}
+	
+.nav-links a:hover {
+	background-color: #e9ecef; /* Light gray background on hover */
+	text-decoration: none;
 	}
 	
 .nav-links a:focus-visible {
-	outline:3px solid #111;
+	outline:3px solid #007bff; /* Focus outline matches link color */
 	outline-offset:2px
 	}
 	
@@ -72,57 +80,74 @@ main.container {
 	display:inline-flex;
 	align-items:center;
 	justify-content:center;
-	padding:8px 12px;
-	border:1px solid #111;
-	background:#111;
+	padding:10px 16px; /* Increased padding for a more modern button size */
+	border:1px solid #007bff; /* Border color matches the new blue */
+	background:#007bff; /* Blue background for the primary button */
 	color:#fff;
-	border-radius:6px;
+	border-radius:20px; /* Rounded pill shape for buttons */
 	cursor:pointer;
-	margin:2px
+	margin:2px;
+	transition: background-color 0.3s ease, border-color 0.3s ease;
 	}
 	
 .btn:hover {
-	filter:brightness(0.9)
+	background:#0056b3; /* Darker blue on hover */
+	border-color: #004085;
+	filter:none; /* Remove original filter for a cleaner transition */
 	}
 	
 .btn.outline {
 	background:#fff;
-	color:#111
+	color:#007bff;
+	border: 1px solid #007bff; /* Outline button with the modern blue */
+	}
+	
+.btn.outline:hover {
+	background-color: #f8f9fa; /* Subtle background change on hover */
 	}
 	
 .input,select,textarea {
 	width:100%;
-	padding:10px;
-	border:1px solid #bbb;
-	border-radius:6px
+	padding:12px; /* Increased padding for form inputs */
+	border:1px solid #ced4da; /* A more subtle border color */
+	border-radius:6px;
+	font-size: 1rem; /* Consistent font size */
 	}
 	
 label {
 	font-weight:600;
-	margin-bottom:4px;
-	display:block
+	margin-bottom:6px; /* Slightly more space below labels */
+	display:block;
+	color: #495057; /* A slightly darker gray for labels */
 	}
 	
 .field {
-	margin-bottom:12px
+	margin-bottom:16px; /* Increased space between form fields */
 	}
 
 /* Simple grids (products, forms, lists) */
 .grid {
 	display:grid;
-	gap:12px
+	gap:20px; /* Increased gap for better spacing */
 	}
 	
 .products {
-	grid-template-columns:repeat(auto-fit,minmax(180px,1fr))
+	grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); /* Slightly wider product cards */
 	}
 	
 .card {
-	border:1px solid #ddd;
-	border-radius:6px;
-	padding:12px;
+	border:none; /* No border for a cleaner look */
+	border-radius:8px; /* Slightly more rounded corners */
+	padding:16px;
 	display:grid;
-	gap:8px
+	gap:12px;
+	background:#fff;
+	box-shadow: 0 4px 6px rgba(0,0,0,.1); /* A gentle shadow for a 'floating' effect */
+	transition: transform 0.3s ease;
+	}
+	
+.card:hover {
+	transform: translateY(-5px); /* Lift card on hover */
 	}
 	
 .card-actions {
@@ -134,13 +159,89 @@ label {
 /* Checkout two-column layout on desktop */
 .checkout {
 	display:grid;
-	gap:16px
+	gap:20px
 	}
 
 .slideshow img {
   width:100%; height:600px; object-fit:contain;
   transition:opacity 1s;
   opacity:1;
+}
+
+/* Specific styling for the welcome section to make it more prominent */
+#wellcome {
+  align-items: center;
+  gap: 10px;
+}
+
+#wellcome p {
+  font-weight: 500;
+  color: #495057;
+}
+
+.checkout-btn {
+	width: 100%;
+	margin-top: 20px;
+	font-size: 1.25rem;
+	padding: 15px;
+	background-color: #28a745; /* A success green color for checkout */
+	border: none;
+	border-radius: 20px;
+	color: white;
+	transition: background-color 0.3s ease;
+}
+
+.checkout-btn:hover {
+	background-color: #218838;
+}
+
+/* Table styling for admin and cart pages */
+table {
+  width:100%; 
+  border-collapse:collapse; 
+  margin-top:20px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden; /* Ensures rounded corners on the table */
+  box-shadow: 0 4px 6px rgba(0,0,0,.1);
+}
+th,td {
+  border:1px solid #e9ecef; /* Lighter borders for a cleaner table */
+  padding:12px; 
+  text-align:center;
+}
+th { 
+  background:#f1f3f5; /* A slightly darker header background */
+  font-weight: 600;
+  color: #333;
+}
+img.thumb { 
+  width:80px; /* Slightly larger thumbnail images */
+  height:80px; 
+  object-fit:cover; 
+  border-radius:8px; /* Rounded corners for images */
+}
+.qty-btn, .remove-btn {
+	padding: 6px 10px;
+	border-radius: 5px;
+	cursor: pointer;
+	border: 1px solid;
+}
+.qty-btn {
+	background-color: #f8f9fa;
+	border-color: #ced4da;
+	color: #495057;
+}
+.qty-btn:hover {
+	background-color: #e9ecef;
+}
+.remove-btn {
+	background-color: #dc3545; /* A red color for remove buttons */
+	border-color: #dc3545;
+	color: white;
+}
+.remove-btn:hover {
+	background-color: #c82333;
 }
 
 
@@ -152,7 +253,7 @@ label {
 
 /* Accessibility helpers */
 :focus-visible {
-	outline:3px solid #111;
+	outline:3px solid #007bff; /* Use the primary blue for focus */
 	outline-offset:2px
 	}   /* visible focus */
 	
@@ -161,7 +262,7 @@ label {
 	left:8px;
 	top:-40px;
 	background:#fff;
-	border:2px solid #111;
+	border:2px solid #007bff;
 	padding:6px 10px;
 	z-index:1000
 	}
@@ -180,4 +281,3 @@ label {
 	border:0;
 	margin:-1px
 	}
-

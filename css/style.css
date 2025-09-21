@@ -14,7 +14,7 @@ html {
 body {
 	font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
 	color:#333; /* Darker text for better readability */
-	background:#f8f9fa; /* A very light gray background for a clean feel */
+	background:#e9f1f5; /* A very light gray background for a clean feel */
 	}
 	
 img {
@@ -43,8 +43,33 @@ a:hover {
 	max-width:960px;
 	margin:0 auto;
 	padding:16px
-
 	}
+
+.header.title {
+    background: #222; color: white; padding: 15px; text-align: center;
+    }
+	
+.section {
+    max-width: 900px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+	
+h2 {
+    border-bottom: 2px solid #eee;
+    padding-bottom: 6px;
+    margin-bottom: 12px;
+    color: #444;
+    }
+	
+ul {
+    list-style: disc;
+    margin-left: 20px;
+    }
+
 	
 .nav {
 	display:flex;

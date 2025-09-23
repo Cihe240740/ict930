@@ -1,8 +1,8 @@
     body {background:#fafafa; margin:0; }
     h1 { text-align:center; margin:20px; }
-    table { width:90%; margin:0 auto; border-collapse:collapse; }
-    th,td { border:1px solid #ccc; padding:10px; text-align:center; }
-    th { background:#eee; }
+    table { width:auto; margin:0 auto; border-collapse:collapse; }
+    /* th,td { border:1px solid #ccc; padding:10px; text-align:center; } */
+    /* th { background:#eee; } */
     img { width:60px; height:60px; object-fit:cover; }
     button { padding:4px 8px; margin:2px; cursor:pointer; }
     .qty-btn { background:#111; color:#fff; border:none; }
@@ -13,17 +13,17 @@
 	  
     }
 	
-table {
-	  width:auto; margin:20px auto; border-collapse:separate;
-	  border-spacing:0; border-radius:8px; overflow:hidden;
-	  box-shadow:0 2px 5px rgba(0,0,0,0.1);
-	}
-	th,td {
-	  padding:12px; text-align:center;
-	}
-	th {
-	  background:#333; color:white;
-	}
+/* table { */
+	  /* width:auto; margin:20px auto; border-collapse:separate; */
+	  /* border-spacing:0; border-radius:8px; overflow:hidden; */
+	  /* box-shadow:0 2px 5px rgba(0,0,0,0.1); */
+	/* } */
+	/* th,td { */
+	  /* padding:12px; text-align:center; */
+	/* } */
+	/* th { */
+	  /* background:#333; color:white; */
+	/* } */
 	tr:nth-child(even){ background:#f9f9f9; }
 	tr:hover { background:#f1f1f1; }
 	img {

@@ -222,7 +222,7 @@ label {
 
 /* Table styling for admin and cart pages */
 table {
-  width:100%; 
+  width:auto; 
   border-collapse:collapse; 
   margin-top:20px;
   background: #fff;
